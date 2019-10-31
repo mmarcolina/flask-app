@@ -12,7 +12,7 @@ def get_db():
             current_app.config['DATABASE'],
             detect_types=sqlite3.PARSE_DECLTYPES
         )
-        # sqlite3,Row tells the connection to return rows that behave like dictionaries, which allows accessing by column names
+        # sqlite3.Row tells the connection to return rows that behave like dictionaries, which allows accessing by column names
         g.db.row_factory = sqlite3.Row
 
     return g.db
@@ -40,3 +40,9 @@ def init_db_command():
     # clear existing data and create new tables
     init_db()
     click.echo('Initialized the database.')
+
+# app.teardown_appcontect() tells flask to call the function when cleaning up after the return response
+# app.cli.add_command() adds a new command that can be called with the flask command
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
